@@ -5,6 +5,7 @@ import { CssBaseline, withStyles } from '@material-ui/core';
 
 import AppHeader from './components/AppHeader';
 import Home from './pages/Home';
+import Pokedex from './pages/Pokedex';
 import PostsManager from './pages/PostsManager';
 
 const styles = theme => ({
@@ -23,6 +24,7 @@ const App = ({ classes }) => (
     <main className={classes.main}>
       <Route exact path="/" component={Home} />
       <SecureRoute path="/posts" component={PostsManager} />
+      <SecureRoute path="/pokedex" component={Pokedex} />
       <Route path="/implicit/callback" component={ImplicitCallback} />
     </main>
   </Fragment>

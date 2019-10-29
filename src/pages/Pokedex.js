@@ -21,7 +21,7 @@ import PostEditor from '../components/PostEditor';
 import ErrorSnackbar from '../components/ErrorSnackbar';
 
 const styles = theme => ({
-  posts: {
+  pokemons: {
     marginTop: theme.spacing(2),
   },
   fab: {
@@ -32,21 +32,20 @@ const styles = theme => ({
       bottom: theme.spacing(2),
       right: theme.spacing(2),
     },
-    backgroundColor: '#990000',
   },
 });
 
 const API = process.env.REACT_APP_API || 'http://localhost:5000';
 
-class PostsManager extends Component {
+class Pokedex extends Component {
   state = {
     loading: true,
-    posts: [],
+    pokemons: [],
     error: null,
   };
 
   componentDidMount() {
-    this.getPosts();
+    this.getPokemons();
   }
 
   async fetch(method, endpoint, body) {
@@ -68,35 +67,35 @@ class PostsManager extends Component {
     }
   }
 
-  async getPosts() {
-    this.setState({ loading: false, posts: (await this.fetch('get', '/posts')) || [] });
+  async getPokemons() {
+    this.setState({ loading: false, pokemons: (await this.fetch('get', '/pokemons')) || [] });
   }
 
-  savePost = async (post) => {
+  savePokemon = async (post) => {
     if (post._id) {
-      await this.fetch('put', `/posts/${post._id}`, post);
+      await this.fetch('put', `/pokemons/${post._id}`, post);
     } else {
-      await this.fetch('post', '/posts', post);
+      await this.fetch('post', '/pokemons', post);
     }
 
     this.props.history.goBack();
-    this.getPosts();
+    this.getPokemons();
   }
 
-  async deletePost(post) {
+  async deletePokemon(post) {
     if (window.confirm(`Are you sure you want to delete "${post.title}"`)) {
-      await this.fetch('delete', `/posts/${post._id}`);
-      this.getPosts();
+      await this.fetch('delete', `/pokemons/${post._id}`);
+      this.getPokemons();
     }
   }
 
-  renderPostEditor = ({ match: { params: { id } } }) => {
+  renderPokemon = ({ match: { params: { id } } }) => {
     if (this.state.loading) return null;
-    const post = find(this.state.posts, { _id: id });
+    const post = find(this.state.pokemons, { _id: id });
 
-    if (!post && id !== 'new') return <Redirect to="/posts" />;
+    if (!post && id !== 'new') return <Redirect to="/pokemons" />;
 
-    return <PostEditor post={post} onSave={this.savePost} />;
+    return <PostEditor post={post} onSave={this.savePokemon} />;
   };
 
   render() {
@@ -104,18 +103,25 @@ class PostsManager extends Component {
 
     return (
       <Fragment>
-        <Typography variant="h4">Posts Manager</Typography>
-        {this.state.posts.length > 0 ? (
-          <Paper elevation={1} className={classes.posts}>
+        <Typography variant="h4">Pokedex</Typography>
+        <form method="get" action="/">
+          <div class="form-group col-md-4 offset-md-4">
+            <label for="item">Search for your Pokemon<br />(by name, id, or type)</label>
+            <input type="text" className="form-control" id="search" name="search" />
+          </div>
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+        {this.state.pokemons.length > 0 ? (
+          <Paper elevation={1} className={classes.pokemons}>
             <List>
-              {orderBy(this.state.posts, ['updatedAt', 'title'], ['desc', 'asc']).map(post => (
-                <ListItem key={post._id} button component={Link} to={`/posts/${post._id}`}>
+              {orderBy(this.state.pokemons, ['updatedAt', 'title'], ['desc', 'asc']).map(post => (
+                <ListItem key={post._id} button component={Link} to={`/pokemons/${post._id}`}>
                   <ListItemText
                     primary={post.title}
                     secondary={post.updatedAt && `Updated ${moment(post.updatedAt).fromNow()}`}
                   />
                   <ListItemSecondaryAction>
-                    <IconButton onClick={() => this.deletePost(post)} color="inherit">
+                    <IconButton onClick={() => this.deletePokemon(post)} color="inherit">
                       <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
@@ -124,18 +130,18 @@ class PostsManager extends Component {
             </List>
           </Paper>
         ) : (
-            !this.state.loading && <Typography variant="subtitle1">No posts to display</Typography>
+            !this.state.loading && <Typography variant="subtitle1">No pokemons to display</Typography>
           )}
         <Fab
           color="secondary"
           aria-label="add"
           className={classes.fab}
           component={Link}
-          to="/posts/new"
+          to="/pokemons/new"
         >
           <AddIcon />
         </Fab>
-        <Route exact path="/posts/:id" render={this.renderPostEditor} />
+        <Route exact path="/pokemons/:id" render={this.renderPokemon} />
         {this.state.error && (
           <ErrorSnackbar
             onClose={() => this.setState({ error: null })}
@@ -147,4 +153,4 @@ class PostsManager extends Component {
   }
 }
 
-export default compose(withAuth, withRouter, withStyles(styles))(PostsManager);
+export default compose(withAuth, withRouter, withStyles(styles))(Pokedex);

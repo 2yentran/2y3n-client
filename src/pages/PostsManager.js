@@ -76,6 +76,7 @@ class PostsManager extends Component {
     if (post._id) {
       await this.fetch('put', `/posts/${post._id}`, post);
     } else {
+      post.username = 'tuyen'; // Temporary
       await this.fetch('post', '/posts', post);
     }
 

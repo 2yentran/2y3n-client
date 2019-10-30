@@ -1,37 +1,40 @@
 import React, { Component, Fragment } from 'react';
 import { withAuth } from '@okta/okta-react';
-import { withRouter, Route, Redirect, Link } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import {
-  withStyles,
-  Typography,
-  IconButton,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Button,
+  Grid,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
+  Typography,
+  withStyles,
 } from '@material-ui/core';
-import Fab from '@material-ui/core/Fab';
-import { Delete as DeleteIcon, Add as AddIcon } from '@material-ui/icons';
-import moment from 'moment';
-import { find, orderBy } from 'lodash';
+import { find } from 'lodash';
 import { compose } from 'recompose';
 
 import PostEditor from '../components/PostEditor';
-import ErrorSnackbar from '../components/ErrorSnackbar';
 
 const styles = theme => ({
   pokemons: {
     marginTop: theme.spacing(2),
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing(3),
-    right: theme.spacing(3),
-    [theme.breakpoints.down('xs')]: {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
+  card: {
+    maxWidth: 300,
+  },
+  media: {
+    height: 300,
+  },
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
   },
 });
 
@@ -68,34 +71,34 @@ class Pokedex extends Component {
   }
 
   async getPokemons() {
-    this.setState({ loading: false, pokemons: (await this.fetch('get', '/pokemons')) || [] });
+    this.setState({ loading: false, pokemons: (await this.fetch('get', '/pokemons?search=electric')) || [] });
   }
 
-  savePokemon = async (post) => {
-    if (post._id) {
-      await this.fetch('put', `/pokemons/${post._id}`, post);
+  savePokemon = async (pokemon) => {
+    if (pokemon._id) {
+      await this.fetch('put', `/pokemons/${pokemon._id}`, pokemon);
     } else {
-      await this.fetch('post', '/pokemons', post);
+      await this.fetch('pokemon', '/pokemons', pokemon);
     }
 
     this.props.history.goBack();
     this.getPokemons();
   }
 
-  async deletePokemon(post) {
-    if (window.confirm(`Are you sure you want to delete "${post.title}"`)) {
-      await this.fetch('delete', `/pokemons/${post._id}`);
+  async deletePokemon(pokemon) {
+    if (window.confirm(`Are you sure you want to delete "${pokemon.title}"`)) {
+      await this.fetch('delete', `/pokemons/${pokemon._id}`);
       this.getPokemons();
     }
   }
 
   renderPokemon = ({ match: { params: { id } } }) => {
     if (this.state.loading) return null;
-    const post = find(this.state.pokemons, { _id: id });
+    const pokemon = find(this.state.pokemons, { _id: id });
 
-    if (!post && id !== 'new') return <Redirect to="/pokemons" />;
+    if (!pokemon && id !== 'new') return <Redirect to="/pokemons" />;
 
-    return <PostEditor post={post} onSave={this.savePokemon} />;
+    return <PostEditor pokemon={pokemon} onSave={this.savePokemon} />;
   };
 
   render() {
@@ -105,49 +108,49 @@ class Pokedex extends Component {
       <Fragment>
         <Typography variant="h4">Pokedex</Typography>
         <form method="get" action="/">
-          <div class="form-group col-md-4 offset-md-4">
-            <label for="item">Search for your Pokemon<br />(by name, id, or type)</label>
+          <div className="form-group col-md-4 offset-md-4">
+            <label>Search for your Pokemon<br />(by name, id, or type)</label>
             <input type="text" className="form-control" id="search" name="search" />
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
         </form>
         {this.state.pokemons.length > 0 ? (
-          <Paper elevation={1} className={classes.pokemons}>
-            <List>
-              {orderBy(this.state.pokemons, ['updatedAt', 'title'], ['desc', 'asc']).map(post => (
-                <ListItem key={post._id} button component={Link} to={`/pokemons/${post._id}`}>
-                  <ListItemText
-                    primary={post.title}
-                    secondary={post.updatedAt && `Updated ${moment(post.updatedAt).fromNow()}`}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton onClick={() => this.deletePokemon(post)} color="inherit">
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
+          <Grid container className={classes.root} spacing={2}>
+            {this.state.pokemons.map(pokemon => (
+              <Paper className={classes.paper}>
+                <Grid item xs={12}>
+                  <Card className={classes.card} key={pokemon.id}>
+                    <CardActionArea>
+                      <CardMedia
+                        className={classes.media}
+                        image={`https://img.pokemondb.net/artwork/${pokemon.name}.jpg`}
+                        title={pokemon.name}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                          {pokemon.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                          {pokemon.flavor_text}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        Share
+                      </Button>
+                      <Button size="small" color="primary">
+                        Learn More
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              </Paper>
+            ))}
+          </Grid>
         ) : (
             !this.state.loading && <Typography variant="subtitle1">No pokemons to display</Typography>
           )}
-        <Fab
-          color="secondary"
-          aria-label="add"
-          className={classes.fab}
-          component={Link}
-          to="/pokemons/new"
-        >
-          <AddIcon />
-        </Fab>
-        <Route exact path="/pokemons/:id" render={this.renderPokemon} />
-        {this.state.error && (
-          <ErrorSnackbar
-            onClose={() => this.setState({ error: null })}
-            message={this.state.error.message}
-          />
-        )}
       </Fragment>
     );
   }

@@ -107,13 +107,14 @@ class Pokedex extends Component {
     return (
       <Fragment>
         <Typography variant="h4">Pokedex</Typography>
-        <form method="get" action="/">
+        {/*<form method="get" action="/">
           <div className="form-group col-md-4 offset-md-4">
             <label>Search for your Pokemon<br />(by name, id, or type)</label>
             <input type="text" className="form-control" id="search" name="search" />
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
+        </form>*/}
+        <label>Wait for it to load</label>
         {this.state.pokemons.length > 0 ? (
           <Grid container className={classes.root} spacing={2}>
             {this.state.pokemons.map(pokemon => (

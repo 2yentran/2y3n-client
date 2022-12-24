@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export default () => (
   <Typography variant="h4">Welcome Home!</Typography>

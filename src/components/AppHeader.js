@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Button, Toolbar, withStyles } from '@material-ui/core';
+import { AppBar, Button, Toolbar, withStyles } from '@mui/material';
 import logo from '../images/logo512.png';
 
 import LoginButton from './LoginButton';

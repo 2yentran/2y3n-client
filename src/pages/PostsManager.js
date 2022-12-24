@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { useOktaAuth } from '@okta/okta-react';
 import { withRouter, Route, Redirect, Link } from 'react-router-dom';
 import {
   withStyles,
@@ -10,9 +10,9 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-} from '@material-ui/core';
-import Fab from '@material-ui/core/Fab';
-import { Delete as DeleteIcon, Add as AddIcon } from '@material-ui/icons';
+} from '@mui/material';
+import Fab from '@mui/material/Fab';
+import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import moment from 'moment';
 import { find, orderBy } from 'lodash';
 import { compose } from 'recompose';
@@ -148,4 +148,4 @@ class PostsManager extends Component {
   }
 }
 
-export default compose(withAuth, withRouter, withStyles(styles))(PostsManager);
+export default compose(useOktaAuth, withRouter, withStyles(styles))(PostsManager);

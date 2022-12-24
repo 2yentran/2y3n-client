@@ -5,9 +5,9 @@ import {
   Menu,
   MenuItem,
   ListItemText,
-} from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
-import { withAuth } from '@okta/okta-react';
+} from '@mui/material';
+import { AccountCircle } from '@mui/icons-material';
+import { useOktaAuth } from '@okta/okta-react';
 
 class LoginButton extends Component {
   state = {
@@ -76,4 +76,4 @@ class LoginButton extends Component {
   }
 }
 
-export default withAuth(LoginButton);
+export default useOktaAuth(LoginButton);

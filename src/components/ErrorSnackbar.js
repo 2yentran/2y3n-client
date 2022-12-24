@@ -1,8 +1,8 @@
 import React from 'react';
-import { withStyles, Snackbar, SnackbarContent, IconButton } from '@material-ui/core';
-import { Error as ErrorIcon, Close as CloseIcon } from '@material-ui/icons';
+import { withStyles, Snackbar, SnackbarContent, IconButton } from '@mui/material';
+import { Error as ErrorIcon, Close as CloseIcon } from '@mui/icons-material';
 import { compose, withState } from 'recompose';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 const styles = theme => ({
   snackbarContent: {

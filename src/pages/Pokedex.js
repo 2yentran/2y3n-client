@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { useOktaAuth } from '@okta/okta-react';
 import { withRouter, Redirect } from 'react-router-dom';
 import {
   Card,
@@ -12,7 +12,7 @@ import {
   Paper,
   Typography,
   withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 import { find } from 'lodash';
 import { compose } from 'recompose';
 
@@ -157,4 +157,4 @@ class Pokedex extends Component {
   }
 }
 
-export default compose(withAuth, withRouter, withStyles(styles))(Pokedex);
+export default compose(useOktaAuth, withRouter, withStyles(styles))(Pokedex);

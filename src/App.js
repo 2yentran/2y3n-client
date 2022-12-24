@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
-import { SecureRoute, ImplicitCallback } from '@okta/okta-react';
-import { CssBaseline, withStyles } from '@material-ui/core';
+import { SecureRoute, LoginCallback } from '@okta/okta-react';
+import { CssBaseline, withStyles } from '@mui/material';
 
 import AppHeader from './components/AppHeader';
 import Home from './pages/Home';
@@ -25,7 +25,7 @@ const App = ({ classes }) => (
       <Route exact path="/" component={Home} />
       <SecureRoute path="/posts" component={PostsManager} />
       <SecureRoute path="/pokedex" component={Pokedex} />
-      <Route path="/implicit/callback" component={ImplicitCallback} />
+      <Route path="/implicit/callback" component={LoginCallback} />
     </main>
   </Fragment>
 );

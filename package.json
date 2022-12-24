@@ -7,13 +7,13 @@
 		"@material-ui/icons": "^4.5.1",
 		"@okta/okta-react": "^1.2.3",
 		"final-form": "^4.18.5",
-		"lodash": "^4.17.15",
-		"moment": "^2.24.0",
+		"lodash": "^4.17.21",
+		"moment": "^2.29.4",
 		"react": "^16.11.0",
 		"react-dom": "^16.11.0",
 		"react-final-form": "^6.3.0",
 		"react-router-dom": "^5.1.2",
-		"react-scripts": "3.2.0",
+		"react-scripts": "^5.0.1",
 		"recompose": "^0.30.0"
 	},
 	"scripts": {
